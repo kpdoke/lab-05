@@ -38,6 +38,11 @@ class CityRepository {
     }
 
     fun updateCity(oldCity: City, updatedCity: City) {
+        /*
+        Changes update city from starter code because
+        there was document name cannot be modified, and there is no way
+        to recover the old city name if it isn't in the City list.
+         */
         if (oldCity.name == updatedCity.name){
             citiesRef.document(oldCity.name).set(updatedCity)
         }
