@@ -21,7 +21,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,12 +34,15 @@ fun CityListScreen(
     cities: List<City>,
     onAddCity: (City) -> Unit,
     onUpdateCity: (City, City) -> Unit,
+    onDeleteCity: (City) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var newCityName by remember { mutableStateOf("") }
     var newProvinceName by remember { mutableStateOf("") }
     var showAddCityFields by remember { mutableStateOf(false) }
     var selectedCity by remember { mutableStateOf<City?>(null) }
+    var selectedCityName by remember { mutableStateOf("") }
+    var selectedProvinceName by remember { mutableStateOf("") }
     var editedCityName by remember { mutableStateOf("") }
     var editedProvinceName by remember { mutableStateOf("") }
 
@@ -58,6 +63,28 @@ fun CityListScreen(
                 }
             ) {
                 Text("+")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            FloatingActionButton (
+                modifier = Modifier
+                    .padding(vertical = 16.dp),
+                onClick = {
+                    if (selectedCityName.isNotBlank() && selectedProvinceName.isNotBlank()) {
+                        onDeleteCity(
+                            City(
+                                name = selectedCityName,
+                                province = selectedProvinceName
+                            )
+                        )
+
+                        selectedCity = null
+                        selectedCityName = ""
+                        selectedProvinceName = ""
+
+                    }
+                }
+            ){
+                Text("DELETE CITY", color = Color.Red)
             }
         }
         if (showAddCityFields) {
@@ -129,7 +156,8 @@ fun CityListScreen(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    modifier = Modifier.padding(vertical = 12.dp),
+                    modifier = Modifier
+                        .padding(vertical = 12.dp),
                     onClick = {
                         val cityToUpdate = selectedCity
                         if (
@@ -164,6 +192,8 @@ fun CityListScreen(
                         newCityName = ""
                         newProvinceName = ""
                         selectedCity = city
+                        selectedCityName = city.name
+                        selectedProvinceName = city.province
                         editedCityName = city.name
                         editedProvinceName = city.province
                     }
@@ -213,7 +243,8 @@ fun CityListScreenPreview() {
                 City("Calgary", "AB")
             ),
             onAddCity = {},
-            onUpdateCity = { _, _ -> }
+            onUpdateCity = { _, _ -> },
+            onDeleteCity = {}
         )
     }
 }
